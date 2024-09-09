@@ -22,6 +22,13 @@ func AssertDeepEqual[T any](t *testing.T, have T, want T, desc string) {
 	}
 }
 
+func AssertTrue(t *testing.T, pred bool, desc string) {
+	t.Helper()
+	if !pred {
+		t.Fatalf("\n%s predicate mismatch:have: %v\nwant: true", desc, pred)
+	}
+}
+
 func AssertNoError(t *testing.T, err error) {
 	t.Helper()
 	if err != nil {
@@ -50,14 +57,12 @@ func AssertPanicTextEq(t *testing.T, fn func(), want string) {
 	t.Helper()
 
 	var recovered any
-
 	// This function wrapper is needed to make t.Helper() report the
 	// correct file after the panic is recovered.
 	func() {
 		defer func() {
 			recovered = recover()
 		}()
-
 		fn()
 	}()
 
