@@ -27,3 +27,9 @@ func AnyDiff[T any](have, want T) string {
 // 	return pretty.Compare(want, have)
 // }
 
+// TextDiff returns a unified diff.
+// Based on a copy of internal/diff from the Go stdlib
+// https://github.com/golang/go/tree/master/src/internal/diff
+func TextDiff(oldName string, old []byte, newName string, new []byte) []byte {
+	return diff.Diff(oldName, old, newName, new)
+}
