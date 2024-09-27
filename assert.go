@@ -3,57 +3,77 @@ package rosina
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"testing"
-
-	"github.com/google/go-cmp/cmp"
 )
 
-func AssertEqual[T comparable](t *testing.T, have T, want T, desc string) {
+func AssertEqual[T comparable](t testing.TB, have T, want T, desc string) {
 	t.Helper()
 	if have != want {
-		t.Fatalf("\n%s mismatch:\nhave: %v\nwant: %v\n", desc, have, want)
+		t.Fatalf("\n%s mismatch:\nhave: %v\nwant: %v", desc, have, want)
 	}
 }
 
 func AssertDeepEqual[T any](t *testing.T, have T, want T, desc string) {
 	t.Helper()
-	if delta := diff(have, want); delta != "" {
+	if delta := AnyDiff(have, want); delta != "" {
 		t.Fatalf("\n%s mismatch: +have -want:\n%s", desc, delta)
 	}
 }
 
-func AssertTrue(t *testing.T, pred bool, desc string) {
+func AssertTrue(t testing.TB, pred bool, desc string) {
 	t.Helper()
 	if !pred {
 		t.Fatalf("\n%s predicate mismatch:have: %v\nwant: true", desc, pred)
 	}
 }
 
-func AssertNoError(t *testing.T, err error) {
+func AssertFalse(t testing.TB, pred bool, desc string) {
 	t.Helper()
-	if err != nil {
-		t.Fatalf("\nhave: %s\nwant: <no error>", err)
+	if pred {
+		t.Fatalf("\n%s predicate mismatch:have: %v\nwant: false", desc, pred)
 	}
 }
 
-func AssertErrorIs(t *testing.T, err error, want error) {
+func AssertContains(t testing.TB, haystack, needle string) {
 	t.Helper()
-	if !errors.Is(err, want) {
-		t.Fatalf("\nhave: %s (%T)\nwant: %s (%T)", err, err, want, want)
+	if !strings.Contains(haystack, needle) {
+		t.Fatalf("\nsubstring not found in string:\nsubstring: %q\nstring:    %q",
+			needle, haystack)
 	}
 }
 
-func AssertErrorTextEq(t *testing.T, err error, want string) {
+func AssertIsNil(t testing.TB, x any) {
+	t.Helper()
+	if x != nil {
+		t.Fatalf("\nhave: %v (%T)\nwant: <nil>", x, x)
+	}
+}
+
+func AssertIsNotNil(t testing.TB, x any) {
+	t.Helper()
+	if x == nil {
+		t.Fatalf("\nhave: <nil>\nwant: not nil")
+	}
+}
+
+func AssertErrorIs(t testing.TB, err error, want error) {
 	t.Helper()
 	if err == nil {
-		t.Fatalf("\nhave: <no error>\nwant error: %s", want)
+		t.Fatalf("\nhave: <no error>\nwant: %q (%T)", want, want)
 	}
-	if delta := diff(err.Error(), want); delta != "" {
-		t.Fatalf("\n%s mismatch: +have -want:\n%s", "error text mismatch", delta)
+	if !errors.Is(err, want) {
+		t.Fatalf("\nhave: %s (%T)\nwant: %q (%T)", err, err, want, want)
 	}
 }
 
-func AssertPanicTextEq(t *testing.T, fn func(), want string) {
+func AssertErrorContains(t testing.TB, err error, want string) {
+	t.Helper()
+	AssertIsNotNil(t, err)
+	AssertContains(t, err.Error(), want)
+}
+
+func AssertPanicTextContains(t testing.TB, fn func(), want string) {
 	t.Helper()
 
 	var recovered any
@@ -71,15 +91,4 @@ func AssertPanicTextEq(t *testing.T, fn func(), want string) {
 	}
 	msg := fmt.Sprint(recovered)
 	AssertEqual(t, msg, want, "panic message")
-}
-
-// diff returns a textual representation of the differences between 'have' and
-// 'want'. Usage:
-//
-//	if delta := diff(body, tc.wantBody); delta != "" {
-//		t.Fatalf("get %s: body: mismatch. +have -want:\n%s",
-//		tc.urlPath, delta)
-//	}
-func diff[T any](have, want T) string {
-	return cmp.Diff(want, have)
 }
