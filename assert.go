@@ -75,12 +75,6 @@ func AssertErrorIs(t testing.TB, err error, want error) {
 	}
 }
 
-func AssertErrorContains(t testing.TB, err error, want string) {
-	t.Helper()
-	AssertIsNotNil(t, err)
-	AssertContains(t, err.Error(), want)
-}
-
 func AssertPanicTextContains(t testing.TB, fn func(), want string) {
 	t.Helper()
 
