@@ -51,10 +51,10 @@ func AssertContains(t testing.TB, haystack, needle string) {
 	}
 }
 
-func AssertNoError(t testing.TB, err error) {
+func AssertNoError(t testing.TB, err error, desc string) {
 	t.Helper()
 	if err != nil {
-		t.Fatalf("\nhave: %v (%T)\nwant: <no error>", err, err)
+		t.Fatalf("%s:\nhave: %v (%T)\nwant: <no error>", desc, err, err)
 	}
 }
 
