@@ -1,4 +1,4 @@
-package rosina
+package assert
 
 import (
 	"os"
@@ -14,7 +14,7 @@ func AssertFileEqualsString(t testing.TB, fPath string, want string) {
 	if err != nil {
 		t.Fatalf("reading fPath: %s", err)
 	}
-	AssertTextEqual(t, string(have), want, fPath)
+	Equal(t, string(have), want, fPath)
 }
 
 // AssertFileEqualsFile asserts that the contents of file 'fpath' are equal to
@@ -28,7 +28,7 @@ func AssertFileEqualsFile(t testing.TB, fPath string, wantPath string) {
 	if err != nil {
 		t.Fatalf("reading wantPath: %s", err)
 	}
-	AssertTextEqual(t, string(have), string(want), "fPath and wantPath")
+	Equal(t, string(have), string(want), "fPath and wantPath")
 }
 
 // AssertFileContains asserts that string 'want' is contained in file 'fPath'.

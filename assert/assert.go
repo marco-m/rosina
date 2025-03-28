@@ -1,4 +1,4 @@
-package rosina
+package assert
 
 import (
 	"errors"
@@ -9,43 +9,49 @@ import (
 	"github.com/marco-m/rosina/diff"
 )
 
-func AssertEqual[T comparable](t testing.TB, have T, want T, desc string) {
+func Equal[T comparable](t testing.TB, have T, want T, desc string) {
 	t.Helper()
-	if have != want {
-		t.Fatalf("\n%s mismatch:\nhave: %v\nwant: %v", desc, have, want)
+	// https://stackoverflow.com/a/71588125/561422
+	switch any(have).(type) {
+	case string:
+		textEqual(t, any(have).(string), any(want).(string), desc)
+	default:
+		if have != want {
+			t.Fatalf("\n%s mismatch:\nhave: %v\nwant: %v", desc, have, want)
+		}
 	}
 }
 
-func AssertTextEqual(t testing.TB, have string, want string, desc string) {
+func textEqual(t testing.TB, have string, want string, desc string) {
 	t.Helper()
 	delta := diff.TextDiff("want", []byte(want), "have", []byte(have))
 	if delta != nil {
-		t.Fatalf("\n%s mismatch: +have -want:\n%s", desc, string(delta))
+		t.Fatalf("\n%s mismatch:\n%s", desc, string(delta))
 	}
 }
 
-func AssertDeepEqual[T any](t testing.TB, have T, want T, desc string) {
+func DeepEqual[T any](t testing.TB, have T, want T, desc string) {
 	t.Helper()
 	if delta := diff.AnyDiff(have, want); delta != "" {
 		t.Fatalf("\n%s mismatch: +have -want:\n%s", desc, delta)
 	}
 }
 
-func AssertTrue(t testing.TB, pred bool, desc string) {
+func True(t testing.TB, pred bool, desc string) {
 	t.Helper()
 	if !pred {
 		t.Fatalf("\n%s predicate mismatch:have: %v\nwant: true", desc, pred)
 	}
 }
 
-func AssertFalse(t testing.TB, pred bool, desc string) {
+func False(t testing.TB, pred bool, desc string) {
 	t.Helper()
 	if pred {
 		t.Fatalf("\n%s predicate mismatch:have: %v\nwant: false", desc, pred)
 	}
 }
 
-func AssertContains(t testing.TB, haystack, needle string) {
+func Contains(t testing.TB, haystack, needle string) {
 	t.Helper()
 	if !strings.Contains(haystack, needle) {
 		t.Fatalf("\nsubstring not found in string:\nsubstring: %q\nstring:    %q",
@@ -53,22 +59,22 @@ func AssertContains(t testing.TB, haystack, needle string) {
 	}
 }
 
-func AssertNoError(t testing.TB, err error, desc string) {
+func NoError(t testing.TB, err error, desc string) {
 	t.Helper()
 	if err != nil {
 		t.Fatalf("%s:\nhave: %v (%T)\nwant: <no error>", desc, err, err)
 	}
 }
 
-func AssertErrorContains(t testing.TB, err error, want string) {
+func ErrorContains(t testing.TB, err error, want string) {
 	t.Helper()
 	if err == nil {
 		t.Fatalf("\nhave: <no error>\nwant: <an error>")
 	}
-	AssertContains(t, err.Error(), want)
+	Contains(t, err.Error(), want)
 }
 
-func AssertErrorIs(t testing.TB, err error, want error) {
+func ErrorIs(t testing.TB, err error, want error) {
 	t.Helper()
 	if err == nil {
 		t.Fatalf("\nhave: <no error>\nwant: %q (%T)", want, want)
@@ -78,7 +84,7 @@ func AssertErrorIs(t testing.TB, err error, want error) {
 	}
 }
 
-func AssertPanicTextContains(t testing.TB, fn func(), want string) {
+func PanicTextContains(t testing.TB, fn func(), want string) {
 	t.Helper()
 
 	var recovered any
@@ -95,5 +101,5 @@ func AssertPanicTextContains(t testing.TB, fn func(), want string) {
 		t.Fatalf("\nhave: <no panic>\nwant panic: %s", want)
 	}
 	msg := fmt.Sprint(recovered)
-	AssertEqual(t, msg, want, "panic message")
+	Equal(t, msg, want, "panic message")
 }

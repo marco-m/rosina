@@ -1,28 +1,79 @@
-package rosina_test
+package assert_test
 
 import (
 	"fmt"
 	"strings"
 	"testing"
 
-	"github.com/marco-m/rosina"
+	"github.com/marco-m/rosina/assert"
 )
 
-func Test_Equal(t *testing.T) {
+func TestEqualStringsOneLine(t *testing.T) {
 	assertPass(t, "IdenticalStrings", func(t testing.TB) {
-		rosina.AssertEqual(t, "hello", "hello", "ciccio")
+		assert.Equal(t, "hello", "hello", "ciccio")
 	})
 
 	want := `
 ciccio mismatch:
-have: hello
-want: goodbye`
+--- want
++++ have
+@@ -1,1 +1,1 @@
+-goodbye
+\ No newline at end of file
++hello
+\ No newline at end of file
+`
 	assertFail(t, "DifferentStrings", want, func(t testing.TB) {
-		rosina.AssertEqual(t, "hello", "goodbye", "ciccio")
+		assert.Equal(t, "hello", "goodbye", "ciccio")
 	})
 }
 
-func Test_DeepEqual(t *testing.T) {
+func TestEqualStringsMultiLine(t *testing.T) {
+	assertPass(t, "IdenticalStrings", func(t testing.TB) {
+		assert.Equal(t, "hello\nciccio", "hello\nciccio", "ciccio")
+	})
+
+	want := `
+ciccio mismatch:
+--- want
++++ have
+@@ -1,3 +1,3 @@
+ line 1
+-foo
++line 2
+ line 3
+`
+
+	innerHave := `line 1
+line 2
+line 3
+`
+
+	innerWant := `line 1
+foo
+line 3
+`
+
+	assertFail(t, "DifferentStrings", want, func(t testing.TB) {
+		assert.Equal(t, innerHave, innerWant, "ciccio")
+	})
+}
+
+func TestEqualNumbers(t *testing.T) {
+	assertPass(t, "IdenticalNumbers", func(t testing.TB) {
+		assert.Equal(t, 42, 42, "ciccio")
+	})
+
+	want := `
+ciccio mismatch:
+have: 42
+want: 3.14`
+	assertFail(t, "DifferentNumbers", want, func(t testing.TB) {
+		assert.Equal(t, 42, 3.14, "ciccio")
+	})
+}
+
+func TestDeepEqual(t *testing.T) {
 	type Zoo struct {
 		X int
 		Y string
@@ -30,12 +81,12 @@ func Test_DeepEqual(t *testing.T) {
 	}
 
 	assertPass(t, "IdenticalStructs", func(t testing.TB) {
-		rosina.AssertDeepEqual(t, Zoo{}, Zoo{}, "zoo")
+		assert.DeepEqual(t, Zoo{}, Zoo{}, "zoo")
 	})
 
 	outerWant := `
 zoo mismatch: +have -want:
-  rosina_test.Zoo{
+  assert_test.Zoo{
 -     X: 2,
 +     X: 1,
       Y: "same",
@@ -54,15 +105,15 @@ zoo mismatch: +have -want:
 		Z: "want",
 	}
 	assertFail(t, "DifferentStructs", outerWant, func(t testing.TB) {
-		rosina.AssertDeepEqual(t, innerHave, innerWant, "zoo")
+		assert.DeepEqual(t, innerHave, innerWant, "zoo")
 	})
 }
 
-func Test_AssertContains(t *testing.T) {
+func TestAssertContains(t *testing.T) {
 	haystack := "Nel mezzo del cammin di nostra vita"
 
 	assertPass(t, "HaystackContains", func(t testing.TB) {
-		rosina.AssertContains(t, haystack, "mezzo del cammin")
+		assert.Contains(t, haystack, "mezzo del cammin")
 	})
 
 	want := `
@@ -70,7 +121,7 @@ substring not found in string:
 substring: "una selva oscura"
 string:    "Nel mezzo del cammin di nostra vita"`
 	assertFail(t, "HaystackDoesNotContain", want, func(t testing.TB) {
-		rosina.AssertContains(t, haystack, "una selva oscura")
+		assert.Contains(t, haystack, "una selva oscura")
 	})
 }
 
@@ -161,6 +212,6 @@ func fixCmpDiff(s string) string {
 
 func TestFixCmpDiff(t *testing.T) {
 	have := fixCmpDiff("	")
-	rosina.AssertEqual(t, have, "    ", "tabs")
+	assert.Equal(t, have, "    ", "tabs")
 	t.Log(quote("\t"))
 }
