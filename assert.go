@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+
+	"github.com/marco-m/rosina/diff"
 )
 
 func AssertEqual[T comparable](t testing.TB, have T, want T, desc string) {
@@ -16,7 +18,7 @@ func AssertEqual[T comparable](t testing.TB, have T, want T, desc string) {
 
 func AssertTextEqual(t testing.TB, have string, want string, desc string) {
 	t.Helper()
-	delta := TextDiff("want", []byte(want), "have", []byte(have))
+	delta := diff.TextDiff("want", []byte(want), "have", []byte(have))
 	if delta != nil {
 		t.Fatalf("\n%s mismatch: +have -want:\n%s", desc, string(delta))
 	}
@@ -24,7 +26,7 @@ func AssertTextEqual(t testing.TB, have string, want string, desc string) {
 
 func AssertDeepEqual[T any](t testing.TB, have T, want T, desc string) {
 	t.Helper()
-	if delta := AnyDiff(have, want); delta != "" {
+	if delta := diff.AnyDiff(have, want); delta != "" {
 		t.Fatalf("\n%s mismatch: +have -want:\n%s", desc, delta)
 	}
 }

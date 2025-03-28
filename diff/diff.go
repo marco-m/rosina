@@ -1,8 +1,8 @@
-package rosina
+package diff
 
 import (
 	"github.com/google/go-cmp/cmp"
-	"github.com/marco-m/rosina/internal/diff"
+	"github.com/marco-m/rosina/diff/internal/diff"
 )
 
 // AnyDiff returns a textual representation of the differences between 'have' and

@@ -159,7 +159,7 @@ func fixCmpDiff(s string) string {
 	return strings.ReplaceAll(s, "\t", "    ")
 }
 
-func TestfixCmpDiff(t *testing.T) {
+func TestFixCmpDiff(t *testing.T) {
 	have := fixCmpDiff("	")
 	rosina.AssertEqual(t, have, "    ", "tabs")
 	t.Log(quote("\t"))
