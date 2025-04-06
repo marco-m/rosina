@@ -6,9 +6,9 @@ import (
 	"testing"
 )
 
-// AssertFileEqualsString asserts that the contents of file 'fPath' are equal to
+// FileEqualsString asserts that the contents of file 'fPath' are equal to
 // string 'want'.
-func AssertFileEqualsString(t testing.TB, fPath string, want string) {
+func FileEqualsString(t testing.TB, fPath string, want string) {
 	t.Helper()
 	have, err := os.ReadFile(fPath)
 	if err != nil {
@@ -17,9 +17,9 @@ func AssertFileEqualsString(t testing.TB, fPath string, want string) {
 	Equal(t, string(have), want, fPath)
 }
 
-// AssertFileEqualsFile asserts that the contents of file 'fpath' are equal to
+// FileEqualsFile asserts that the contents of file 'fpath' are equal to
 // the contents of file 'wantPath'.
-func AssertFileEqualsFile(t testing.TB, fPath string, wantPath string) {
+func FileEqualsFile(t testing.TB, fPath string, wantPath string) {
 	have, err := os.ReadFile(fPath)
 	if err != nil {
 		t.Fatalf("reading fPath: %s", err)
@@ -31,8 +31,8 @@ func AssertFileEqualsFile(t testing.TB, fPath string, wantPath string) {
 	Equal(t, string(have), string(want), "fPath and wantPath")
 }
 
-// AssertFileContains asserts that string 'want' is contained in file 'fPath'.
-func AssertFileContains(t testing.TB, fPath string, want string) {
+// FileContains asserts that string 'want' is contained in file 'fPath'.
+func FileContains(t testing.TB, fPath string, want string) {
 	have, err := os.ReadFile(fPath)
 	if err != nil {
 		t.Fatalf("reading fPath: %s", err)
