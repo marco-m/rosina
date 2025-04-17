@@ -20,6 +20,7 @@ func FileEqualsString(t testing.TB, fPath string, want string) {
 // FileEqualsFile asserts that the contents of file 'fpath' are equal to
 // the contents of file 'wantPath'.
 func FileEqualsFile(t testing.TB, fPath string, wantPath string) {
+	t.Helper()
 	have, err := os.ReadFile(fPath)
 	if err != nil {
 		t.Fatalf("reading fPath: %s", err)
@@ -33,6 +34,7 @@ func FileEqualsFile(t testing.TB, fPath string, wantPath string) {
 
 // FileContains asserts that string 'want' is contained in file 'fPath'.
 func FileContains(t testing.TB, fPath string, want string) {
+	t.Helper()
 	have, err := os.ReadFile(fPath)
 	if err != nil {
 		t.Fatalf("reading fPath: %s", err)
