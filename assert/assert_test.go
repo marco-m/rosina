@@ -17,7 +17,7 @@ func TestEqualStringsOneLine(t *testing.T) {
 ciccio mismatch:
 --- want
 +++ have
-@@ -1,1 +1,1 @@
+@@ -1 +1 @@
 -goodbye
 \ No newline at end of file
 +hello

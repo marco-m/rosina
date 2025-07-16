@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/marco-m/rosina/diff/internal/diff"
+	diffp "github.com/marco-m/rosina/diff/internal/diffp"
 )
 
 // AnyDiff returns a textual representation of the differences between 'have'
@@ -17,16 +18,18 @@ func AnyDiff[T any](have, want T) string {
 	return strings.ReplaceAll(cmp.Diff(want, have), "\t", "    ")
 }
 
-// DiffLenient is based solely on the untyped output of fmt.Print, but should
-// be OK since we wrap it with generics to force the same type. Introduced to
-// see if we can solve the problems we have with diffUnstable.
-// func DiffLenient[T any](have, want T) string {
-// 	return pretty.Compare(want, have)
-// }
-
 // TextDiff returns a unified diff.
-// Based on a copy of internal/diff from the Go stdlib
-// https://github.com/golang/go/tree/master/src/internal/diff
-func TextDiff(oldName string, old []byte, newName string, new []byte) []byte {
-	return diff.Diff(oldName, old, newName, new)
+// Based on a copy of x/tools/internal/diff
+// https://github.com/golang/tools/tree/master/internal/diff
+func TextDiff(oldLabel string, newLabel string, old string, new string) string {
+	return diff.Unified(oldLabel, newLabel, old, new)
+}
+
+// TextDiffPatient returns a unified diff, using the patient diff algorithm.
+// Note that "patient" comes from "patient sorting": it is actually _faster_ than a
+// standard diff algorithm.
+// Based on a copy of x/tools/internal/diffp
+// https://github.com/golang/go/tree/master/src/internal/diffp
+func TextDiffPatient(oldName string, old []byte, newName string, new []byte) []byte {
+	return diffp.Diff(oldName, old, newName, new)
 }

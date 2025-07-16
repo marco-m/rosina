@@ -24,9 +24,9 @@ func Equal[T comparable](t testing.TB, have T, want T, desc string) {
 
 func textEqual(t testing.TB, have string, want string, desc string) {
 	t.Helper()
-	delta := diff.TextDiff("want", []byte(want), "have", []byte(have))
-	if delta != nil {
-		t.Fatalf("\n%s mismatch:\n%s", desc, string(delta))
+	delta := diff.TextDiff("want", "have", want, have)
+	if delta != "" {
+		t.Fatalf("\n%s mismatch:\n%s", desc, delta)
 	}
 }
 
