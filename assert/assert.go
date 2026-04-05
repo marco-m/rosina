@@ -3,31 +3,17 @@ package assert
 import (
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 
 	"github.com/marco-m/rosina/diff"
+	"github.com/marco-m/rosina/internal"
 )
 
 func Equal[T comparable](t testing.TB, have T, want T, desc string) {
 	t.Helper()
-	// https://stackoverflow.com/a/71588125/561422
-	switch any(have).(type) {
-	case string:
-		textEqual(t, any(have).(string), any(want).(string), desc)
-	default:
-		if have != want {
-			t.Fatalf("\n%s mismatch:\nhave: %v\nwant: %v", desc, have, want)
-		}
-	}
-}
-
-func textEqual(t testing.TB, have string, want string, desc string) {
-	t.Helper()
-	delta := diff.TextDiff("want", "have", want, have)
-	if delta != "" {
-		t.Fatalf("\n%s mismatch:\n%s", desc, delta)
-	}
+	internal.Equal(t.Fatalf, t, have, want, desc)
 }
 
 func DeepEqual[T any](t testing.TB, have T, want T, desc string) {
@@ -51,11 +37,11 @@ func False(t testing.TB, pred bool, desc string) {
 	}
 }
 
-func Contains(t testing.TB, haystack, needle string) {
+func Contains(t testing.TB, haystack, needle string, desc string) {
 	t.Helper()
 	if !strings.Contains(haystack, needle) {
-		t.Fatalf("\nsubstring not found in string:\nsubstring: %q\nstring:    %q",
-			needle, haystack)
+		t.Fatalf("%s:\nsubstring not found in string:\nsubstring: %q\nstring:    %q",
+			desc, needle, haystack)
 	}
 }
 
@@ -66,21 +52,35 @@ func NoError(t testing.TB, err error, desc string) {
 	}
 }
 
-func ErrorContains(t testing.TB, err error, want string) {
+func ErrorContains(t testing.TB, err error, want string, desc string) {
 	t.Helper()
 	if err == nil {
-		t.Fatalf("\nhave: <no error>\nwant: <an error>")
+		t.Fatalf("%s:\nhave: <no error>\nwant: <an error>", desc)
 	}
-	Contains(t, err.Error(), want)
+	Contains(t, err.Error(), want, desc)
 }
 
-func ErrorIs(t testing.TB, err error, want error) {
+func ErrorMatches(t testing.TB, have error, wantPattern string, desc string) {
 	t.Helper()
-	if err == nil {
-		t.Fatalf("\nhave: <no error>\nwant: %q (%T)", want, want)
+	if have == nil {
+		t.Fatalf("%s:\nhave: <no error>\nwant: error matching: %s", desc, wantPattern)
 	}
-	if !errors.Is(err, want) {
-		t.Fatalf("\nhave: %s (%T)\nwant: %q (%T)", err, err, want, want)
+	ok, mErr := regexp.MatchString(wantPattern, have.Error())
+	if mErr != nil {
+		t.Fatalf("%s:\nregexp build error: %v", desc, mErr)
+	}
+	if !ok {
+		t.Fatalf("%s:\nerror message: %s\ndoes not match pattern: %s", desc, have, wantPattern)
+	}
+}
+
+func ErrorIs(t testing.TB, have, want error, desc string) {
+	t.Helper()
+	if have == nil {
+		t.Fatalf("%s:\nhave: <no error>\nwant: %v (%T)", desc, want, want)
+	}
+	if !errors.Is(have, want) {
+		t.Fatalf("%s:\nhave: %v (%T)\nwant: %v (%T)", desc, have, have, want, want)
 	}
 }
 

@@ -13,16 +13,9 @@ func TestEqualStringsOneLine(t *testing.T) {
 		assert.Equal(t, "hello", "hello", "ciccio")
 	})
 
-	want := `
-ciccio mismatch:
---- want
-+++ have
-@@ -1 +1 @@
--goodbye
-\ No newline at end of file
-+hello
-\ No newline at end of file
-`
+	want := `ciccio:
+have: hello
+want: goodbye`
 	assertFail(t, "DifferentStrings", want, func(t testing.TB) {
 		assert.Equal(t, "hello", "goodbye", "ciccio")
 	})
@@ -33,8 +26,7 @@ func TestEqualStringsMultiLine(t *testing.T) {
 		assert.Equal(t, "hello\nciccio", "hello\nciccio", "ciccio")
 	})
 
-	want := `
-ciccio mismatch:
+	want := `ciccio:
 --- want
 +++ have
 @@ -1,3 +1,3 @@
@@ -64,8 +56,7 @@ func TestEqualNumbers(t *testing.T) {
 		assert.Equal(t, 42, 42, "ciccio")
 	})
 
-	want := `
-ciccio mismatch:
+	want := `ciccio:
 have: 42
 want: 3.14`
 	assertFail(t, "DifferentNumbers", want, func(t testing.TB) {
@@ -113,15 +104,15 @@ func TestAssertContains(t *testing.T) {
 	haystack := "Nel mezzo del cammin di nostra vita"
 
 	assertPass(t, "HaystackContains", func(t testing.TB) {
-		assert.Contains(t, haystack, "mezzo del cammin")
+		assert.Contains(t, haystack, "mezzo del cammin", "description")
 	})
 
-	want := `
+	want := `description:
 substring not found in string:
 substring: "una selva oscura"
 string:    "Nel mezzo del cammin di nostra vita"`
 	assertFail(t, "HaystackDoesNotContain", want, func(t testing.TB) {
-		assert.Contains(t, haystack, "una selva oscura")
+		assert.Contains(t, haystack, "una selva oscura", "description")
 	})
 }
 
@@ -199,7 +190,7 @@ func quote(msg string) string {
 }
 
 func fixCmpDiff(s string) string {
-	// randomly cmd.Diff returns NBS (non-breaking space) instead of space :-(
+	// randomly cmp.Diff returns NBS (non-breaking space) instead of space :-(
 	sigh := func(r rune) rune {
 		if r == 0xa0 {
 			return ' '

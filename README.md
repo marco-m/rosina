@@ -7,4 +7,6 @@
 
 ## About the name Rosina
 
-The name `Rosina` is a humble homage to _Rosina Ferrario_, the first Italian woman pilot. She received her license in 1913. From the Wikipedia page in [Italian](https://it.wikipedia.org/wiki/Rosina_Ferrario) you can find also other languages.
+The name `Rosina` is a humble homage to _Rosina Ferrario_, the first Italian woman airplane pilot and airplane tester.
+She received her license in 1913.
+From the Wikipedia page in [Italian](https://it.wikipedia.org/wiki/Rosina_Ferrario) you can find also other languages.
