@@ -1,6 +1,6 @@
 module github.com/marco-m/rosina
 
-go 1.25
+go 1.26
 
 require (
 	github.com/alecthomas/repr v0.5.2
