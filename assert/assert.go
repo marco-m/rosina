@@ -26,14 +26,14 @@ func DeepEqual[T any](t testing.TB, have T, want T, desc string) {
 func True(t testing.TB, pred bool, desc string) {
 	t.Helper()
 	if !pred {
-		t.Fatalf("\n%s predicate mismatch:have: %v\nwant: true", desc, pred)
+		t.Fatalf("%s:\nhave: %v\nwant: true", desc, pred)
 	}
 }
 
 func False(t testing.TB, pred bool, desc string) {
 	t.Helper()
 	if pred {
-		t.Fatalf("\n%s predicate mismatch:have: %v\nwant: false", desc, pred)
+		t.Fatalf("%s:\nhave: %v\nwant: false", desc, pred)
 	}
 }
 

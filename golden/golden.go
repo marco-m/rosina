@@ -27,7 +27,7 @@ func DiffTextAndFile(t *testing.T, have string, goldenPath string, update bool) 
 func DiffFiles(t *testing.T, havePath string, goldenPath string, update bool) string {
 	t.Helper()
 	have, err := os.ReadFile(havePath)
-	assert.NoError(t, err, "reading file")
+	assert.NoError(t, err, "reading file havePath")
 	haveStr := string(have)
 	wantStr := ReadOrUpdate(t, haveStr, goldenPath, update)
 	return string(diff.TextDiffPatient("want", []byte(wantStr), "have", []byte(haveStr)))
