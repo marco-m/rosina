@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
-	"strings"
 	"testing"
 
 	"github.com/marco-m/rosina/diff"
@@ -39,10 +38,7 @@ func False(t testing.TB, pred bool, desc string) {
 
 func Contains(t testing.TB, haystack, needle string, desc string) {
 	t.Helper()
-	if !strings.Contains(haystack, needle) {
-		t.Fatalf("%s:\nsubstring not found in string:\nsubstring: %q\nstring:    %q",
-			desc, needle, haystack)
-	}
+	internal.Contains(t.Fatalf, t, haystack, needle, desc)
 }
 
 func NoError(t testing.TB, err error, desc string) {
