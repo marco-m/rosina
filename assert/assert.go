@@ -24,16 +24,12 @@ func DeepEqual[T any](t testing.TB, have T, want T, desc string) {
 
 func True(t testing.TB, pred bool, desc string) {
 	t.Helper()
-	if !pred {
-		t.Fatalf("%s:\nhave: %v\nwant: true", desc, pred)
-	}
+	internal.True(t.Fatalf, t, pred, desc)
 }
 
 func False(t testing.TB, pred bool, desc string) {
 	t.Helper()
-	if pred {
-		t.Fatalf("%s:\nhave: %v\nwant: false", desc, pred)
-	}
+	internal.False(t.Fatalf, t, pred, desc)
 }
 
 func Contains(t testing.TB, haystack, needle string, desc string) {

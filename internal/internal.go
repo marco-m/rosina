@@ -22,6 +22,20 @@ func Equal[T comparable](fn FatalFunc, t testing.TB, have T, want T, desc string
 	}
 }
 
+func True(fn FatalFunc, t testing.TB, pred bool, desc string) {
+	t.Helper()
+	if !pred {
+		fn("%s:\nhave: %v\nwant: true", desc, pred)
+	}
+}
+
+func False(fn FatalFunc, t testing.TB, pred bool, desc string) {
+	t.Helper()
+	if pred {
+		fn("%s:\nhave: %v\nwant: false", desc, pred)
+	}
+}
+
 func Contains(fn FatalFunc, t testing.TB, haystack, needle string, desc string) {
 	t.Helper()
 	if !strings.Contains(haystack, needle) {
