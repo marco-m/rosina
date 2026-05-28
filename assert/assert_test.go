@@ -116,6 +116,22 @@ string:    "Nel mezzo del cammin di nostra vita"`
 	})
 }
 
+func TestAssertNotContains(t *testing.T) {
+	haystack := "Nel mezzo del cammin di nostra vita"
+
+	assertPass(t, "HaystackDoesNotContains", func(t testing.TB) {
+		assert.NotContains(t, haystack, "banana", "description")
+	})
+
+	want := `description:
+substring found in string:
+substring: "cammin di"
+string:    "Nel mezzo del cammin di nostra vita"`
+	assertFail(t, "HaystackContain", want, func(t testing.TB) {
+		assert.NotContains(t, haystack, "cammin di", "description")
+	})
+}
+
 //
 //
 //

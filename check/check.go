@@ -25,3 +25,8 @@ func Contains(t testing.TB, haystack, needle string, desc string) {
 	t.Helper()
 	internal.Contains(t.Errorf, t, haystack, needle, desc)
 }
+
+func NotContains(t testing.TB, haystack, needle string, desc string) {
+	t.Helper()
+	internal.NotContains(t.Errorf, t, haystack, needle, desc)
+}

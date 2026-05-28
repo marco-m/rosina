@@ -44,6 +44,14 @@ func Contains(fn FatalFunc, t testing.TB, haystack, needle string, desc string) 
 	}
 }
 
+func NotContains(fn FatalFunc, t testing.TB, haystack, needle string, desc string) {
+	t.Helper()
+	if strings.Contains(haystack, needle) {
+		fn("%s:\nsubstring found in string:\nsubstring: %q\nstring:    %q",
+			desc, needle, haystack)
+	}
+}
+
 func textEqual(fn FatalFunc, t testing.TB, have string, want string, desc string) {
 	t.Helper()
 	if !strings.Contains(have, "\n") && !strings.Contains(want, "\n") {

@@ -37,6 +37,11 @@ func Contains(t testing.TB, haystack, needle string, desc string) {
 	internal.Contains(t.Fatalf, t, haystack, needle, desc)
 }
 
+func NotContains(t testing.TB, haystack, needle string, desc string) {
+	t.Helper()
+	internal.NotContains(t.Fatalf, t, haystack, needle, desc)
+}
+
 func NoError(t testing.TB, err error, desc string) {
 	t.Helper()
 	if err != nil {
