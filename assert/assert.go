@@ -45,7 +45,7 @@ func NotContains(t testing.TB, haystack, needle string, desc string) {
 func NoError(t testing.TB, err error, desc string) {
 	t.Helper()
 	if err != nil {
-		t.Fatalf("%s:\nhave: %v (%T)\nwant: <no error>", desc, err, err)
+		t.Fatalf("%s:\nhave: <error>\n%v\nwant: <no error>", desc, err)
 	}
 }
 
@@ -74,10 +74,10 @@ func ErrorMatches(t testing.TB, have error, wantPattern string, desc string) {
 func ErrorIs(t testing.TB, have, want error, desc string) {
 	t.Helper()
 	if have == nil {
-		t.Fatalf("%s:\nhave: <no error>\nwant: %v (%T)", desc, want, want)
+		t.Fatalf("%s:\nhave: <no error>\nwant: <error> %v", desc, want)
 	}
 	if !errors.Is(have, want) {
-		t.Fatalf("%s:\nhave: %v (%T)\nwant: %v (%T)", desc, have, have, want, want)
+		t.Fatalf("%s:\nhave: <error> %v\nwant: <error> %v", desc, have, want)
 	}
 }
 
