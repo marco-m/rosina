@@ -11,6 +11,11 @@ func Equal[T comparable](t testing.TB, have T, want T, desc string) {
 	internal.Equal(t.Errorf, t, have, want, desc)
 }
 
+func DeepEqual[T any](t testing.TB, have T, want T, desc string) {
+	t.Helper()
+	internal.DeepEqual(t.Errorf, t, have, want, desc)
+}
+
 func True(t testing.TB, pred bool, desc string) {
 	t.Helper()
 	internal.True(t.Errorf, t, pred, desc)
@@ -29,4 +34,9 @@ func Contains(t testing.TB, haystack, needle string, desc string) {
 func NotContains(t testing.TB, haystack, needle string, desc string) {
 	t.Helper()
 	internal.NotContains(t.Errorf, t, haystack, needle, desc)
+}
+
+func NoError(t testing.TB, err error, desc string) {
+	t.Helper()
+	internal.NoError(t.Errorf, t, err, desc)
 }

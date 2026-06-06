@@ -22,6 +22,13 @@ func Equal[T comparable](fn FatalFunc, t testing.TB, have T, want T, desc string
 	}
 }
 
+func DeepEqual[T any](fn FatalFunc, t testing.TB, have T, want T, desc string) {
+	t.Helper()
+	if delta := diff.AnyDiff(have, want); delta != "" {
+		fn("\n%s mismatch: +have -want:\n%s", desc, delta)
+	}
+}
+
 func True(fn FatalFunc, t testing.TB, pred bool, desc string) {
 	t.Helper()
 	if !pred {
@@ -49,6 +56,13 @@ func NotContains(fn FatalFunc, t testing.TB, haystack, needle string, desc strin
 	if strings.Contains(haystack, needle) {
 		fn("%s:\nsubstring found in string:\nsubstring: %q\nstring:    %q",
 			desc, needle, haystack)
+	}
+}
+
+func NoError(fn FatalFunc, t testing.TB, err error, desc string) {
+	t.Helper()
+	if err != nil {
+		fn("%s:\nhave: <error>\n%v\nwant: <no error>", desc, err)
 	}
 }
 

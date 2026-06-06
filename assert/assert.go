@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/marco-m/rosina/diff"
 	"github.com/marco-m/rosina/internal"
 )
 
@@ -17,9 +16,7 @@ func Equal[T comparable](t testing.TB, have T, want T, desc string) {
 
 func DeepEqual[T any](t testing.TB, have T, want T, desc string) {
 	t.Helper()
-	if delta := diff.AnyDiff(have, want); delta != "" {
-		t.Fatalf("\n%s mismatch: +have -want:\n%s", desc, delta)
-	}
+	internal.DeepEqual(t.Fatalf, t, have, want, desc)
 }
 
 func True(t testing.TB, pred bool, desc string) {
@@ -44,9 +41,7 @@ func NotContains(t testing.TB, haystack, needle string, desc string) {
 
 func NoError(t testing.TB, err error, desc string) {
 	t.Helper()
-	if err != nil {
-		t.Fatalf("%s:\nhave: <error>\n%v\nwant: <no error>", desc, err)
-	}
+	internal.NoError(t.Fatalf, t, err, desc)
 }
 
 func ErrorContains(t testing.TB, err error, want string, desc string) {
