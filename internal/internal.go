@@ -62,7 +62,7 @@ func NotContains(fn FatalFunc, t testing.TB, haystack, needle string, desc strin
 func NoError(fn FatalFunc, t testing.TB, err error, desc string) {
 	t.Helper()
 	if err != nil {
-		fn("%s:\nhave: <error>\n%v\nwant: <no error>", desc, err)
+		fn("%s:\nhave: %v\nwant: <no error>", desc, err)
 	}
 }
 
