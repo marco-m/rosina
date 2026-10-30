@@ -25,7 +25,7 @@ func Equal[T comparable](fn FatalFunc, t testing.TB, have T, want T, desc string
 func DeepEqual[T any](fn FatalFunc, t testing.TB, have T, want T, desc string) {
 	t.Helper()
 	if delta := diff.AnyDiff(have, want); delta != "" {
-		fn("\n%s mismatch: +have -want:\n%s", desc, delta)
+		fn("\n%s mismatch:\n%s", desc, delta)
 	}
 }
 

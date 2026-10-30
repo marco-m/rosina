@@ -76,7 +76,9 @@ func TestDeepEqual(t *testing.T) {
 	})
 
 	outerWant := `
-zoo mismatch: +have -want:
+zoo mismatch:
+--- want
++++ have
   assert_test.Zoo{
 -     X: 2,
 +     X: 1,

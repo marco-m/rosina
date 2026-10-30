@@ -1,6 +1,7 @@
 package diff
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/alecthomas/repr"
@@ -44,5 +45,10 @@ func AnyDiff[T any](have, want T) string {
 	// spaces on the exact same inputs. This is actually done on purpose. On the
 	// other hand, we do want the output to be as stable as possible. We attempt
 	// to make it stable by replacing tabs with spaces.
-	return strings.ReplaceAll(cmp.Diff(want, have), "\t", "    ")
+	diff := cmp.Diff(want, have)
+	if diff == "" {
+		return ""
+	}
+	return fmt.Sprintf("--- want\n+++ have\n%s",
+		strings.ReplaceAll(diff, "\t", "    "))
 }
